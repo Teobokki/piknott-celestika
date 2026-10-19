@@ -1,0 +1,8 @@
+build/
+build_onefile/
+dist/
+dist_onefile/
+*.log
+__pycache__/
+*.pyc
+blender/*.blend1
