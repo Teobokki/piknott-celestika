@@ -2,13 +2,13 @@
 
 A fully cel-shaded monster-catching RPG for Windows. Explore the Celestika region as a boy in a red hoodie, sneak through tall grass, throw **PIKCEL balls** to catch wild **PIKNOTT**, and battle them with your team using a Legends-Arceus-style action-order system with **Normal / Strong / Agile** move styles.
 
-©2026 EX Inc./HYPERION DIGITAL ©2026. Publisher: EX Inc./HYPERION DIGITAL. Version 1.0.0.
+©2026 EX Inc./HYPERION DIGITAL ©2026. Publisher: EX Inc./HYPERION DIGITAL. Version 1.0.1.
 
 ## Download
 See [Releases](https://github.com/Teobokki/piknott-celestika/releases/latest):
-- `PIKNOTT.CELESTIKA.Setup.1.0.0.exe`: installer (goes to `%LOCALAPPDATA%\Programs\PIKNOTT CELESTIKA`, with desktop and Start-menu shortcuts)
+- `PIKNOTT.CELESTIKA.Setup.1.0.1.exe`: installer (goes to `%LOCALAPPDATA%\Programs\PIKNOTT CELESTIKA`, with desktop and Start-menu shortcuts)
 - `PIKNOTT.CELESTIKA.Portable.exe`: a single-file portable build that updates itself
-- `PIKNOTT.CELESTIKA.1.0.0.Windows.x64.zip`: the plain onedir build
+- `PIKNOTT.CELESTIKA.1.0.1.Windows.x64.zip`: the plain onedir build
 
 Saves go to `%APPDATA%\PIKNOTT CELESTIKA\save.json`.
 

@@ -201,6 +201,7 @@ class Game:
         a.accept("g", self.throw_own); a.accept("c", self.toggle_crouch); a.accept("control", self.toggle_crouch)
         a.accept("m", self.toggle_map); a.accept("p", self.toggle_dok); a.accept("tab", self.toggle_party)
         a.accept("e", self.interact); a.accept("escape", self.on_escape)
+        a.accept("mouse2", self.toggle_cursor)
         self.crouch = False
         self.pad = None
         try:
@@ -262,8 +263,25 @@ class Game:
             self.crouch = not self.crouch
 
     def on_click(self):
-        if self.mode == "explore" and not self.overlay and self.mouse_captured:
-            self.throw_capture()
+        if self.mode == "explore" and not self.overlay and not self.paused:
+            if self.mouse_captured:
+                self.throw_capture()
+            elif not self.battle:
+                self.capture_mouse(True)   # clicked the world (not a HUD button): back to camera control
+
+    def toggle_cursor(self):
+        """Middle mouse: free the cursor so the on-screen buttons can be clicked (click the world to resume)."""
+        if self.mode == "explore" and not self.overlay and not self.paused and not self.battle:
+            self.aiming = False; self.crosshair.hide()
+            self.capture_mouse(not self.mouse_captured)
+
+    def hud_menu(self):
+        if self.overlay:
+            self.close_overlay()
+        self.app.show_pause()
+
+    def _close_btn(self, o, label, pos=(0, -0.93)):
+        U.button(o, label, pos, self.close_overlay, w=0.16, h=0.045, col=(0.9, 0.3, 0.25, 1), scale=0.04)
 
     def on_escape(self):
         if self.overlay:
@@ -710,6 +728,15 @@ class Game:
         U.text(self.hud, "N", (self.mm_center[0], self.mm_center[1] + S - 0.05), 0.045, (1, 1, 1, 1))
         self.zone_lbl = U.text(self.hud, "", (self.mm_center[0], self.mm_center[1] - S - 0.075), 0.05, (1, 0.92, 0.4, 1))
         U.text(self.hud, "[M] Region map", (self.mm_center[0], self.mm_center[1] - S - 0.13), 0.035, (0.9, 0.9, 0.95, 1))
+        # mouse-clickable HUD buttons (left of the minimap)
+        bx = self.mm_center[0] - S - 0.25
+        self.hud_btns = []
+        for i, (lbl, cmd, col) in enumerate((("MENU (Esc)", self.hud_menu, (0.9, 0.3, 0.25, 1)),
+                                             ("MAP (M)", self.toggle_map, (0.3, 0.62, 1, 1)),
+                                             ("TEAM (Tab)", self.toggle_party, (0.35, 0.8, 0.4, 1)),
+                                             ("DOK (P)", self.toggle_dok, (0.62, 0.4, 0.95, 1)))):
+            self.hud_btns.append(U.button(self.hud, lbl, (bx, 0.92 - i * 0.12), cmd, w=0.18, h=0.045, col=col, scale=0.038))
+        self.cursor_hint = U.text(self.hud, "", (bx, 0.92 - 4 * 0.12 + 0.02), 0.03, (0.95, 0.95, 1, 1), outline=True, wrap=12)
         # lead PIKNOTT card (top-left)
         U.panel(self.hud, 0, 0.62, -0.12, 0, (0.12, 0.13, 0.22, 0.96), 0.012, (-ar + 0.05, 0.95))
         self.lead_lbl = U.text(self.hud, "", (-ar + 0.08, 0.875), 0.045, (1, 1, 1, 1), TextNode.A_left)
@@ -780,6 +807,7 @@ class Game:
             elif self.crouch:
                 st = "Sneaking"
         self.status_lbl.setText(st)
+        self.cursor_hint.setText("" if self.mode != "explore" or self.battle or self.overlay else ("Middle-click: free cursor to click buttons" if self.mouse_captured else "Cursor free - click the world to look around"))
         # minimap window
         S = self.mm_S; span = self.mm_span; sc = span / (2 * W.SIZE)
         u = (self.x + W.SIZE) / (2 * W.SIZE); v = (self.y + W.SIZE) / (2 * W.SIZE)
@@ -834,7 +862,8 @@ class Game:
         def upd():
             arrow.set_pos(self.x / W.SIZE * S, 0, 0.02 + self.y / W.SIZE * S); arrow.set_r(-self.h)
         self._map_upd = upd; upd()
-        U.text(o, "Coloured dots = wild PIKNOTT    Red = Camp    Gold = Star Shrine    [M] close", (0, -0.93), 0.04, (0.9, 0.9, 0.95, 1))
+        self._close_btn(o, "Close (M)", (1.15, -0.93))
+        U.text(o, "Coloured dots = wild PIKNOTT    Red = Camp    Gold = Star Shrine    [M] close", (-0.25, -0.93), 0.04, (0.9, 0.9, 0.95, 1))
 
     def toggle_dok(self, sel=None):
         if self.overlay and getattr(self, "_ov", "") == "dok" and sel is None:
@@ -874,7 +903,7 @@ class Game:
         else:
             U.text(o, "No.%03d  ?????" % sel, (0.05, 0.4), 0.075)
             U.text(o, "Not seen yet. Explore the Celestika region!", (0.05, 0.1), 0.045, (0.85, 0.85, 0.9, 1), outline=False)
-        U.text(o, "[P] close", (1.45, -0.85), 0.04, (0.85, 0.85, 0.9, 1), TextNode.A_right, outline=False)
+        self._close_btn(o, "Close (P)", (1.3, -0.85))
 
     def toggle_party(self, refresh=False):
         if self.overlay and getattr(self, "_ov", "") == "party" and not refresh:
@@ -904,7 +933,8 @@ class Game:
             U.text(o, "%s  Lv %d" % (m.name, m.level), (0.2, y - 0.015), 0.04, (1, 1, 1, 1), TextNode.A_left)
             U.button(o, "To team", (1.2, y), self._party_act, w=0.14, h=0.035, scale=0.032, extra=["take", i], enabled=len(self.party) < 6)
         U.text(o, "Potions: %d     Pikcel %d   Nova %d   Astral %d          [Tab] close" % (
-            self.items.get("potion", 0), self.items["pikcel"], self.items["nova"], self.items["astral"]), (0, -0.82), 0.04, (0.9, 0.9, 0.95, 1), outline=False)
+            self.items.get("potion", 0), self.items["pikcel"], self.items["nova"], self.items["astral"]), (-0.2, -0.82), 0.04, (0.9, 0.9, 0.95, 1), outline=False)
+        self._close_btn(o, "Close (Tab)", (1.25, -0.82))
 
     def _party_act(self, act, i):
         if act == "lead":

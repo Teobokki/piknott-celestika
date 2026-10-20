@@ -1,4 +1,4 @@
-﻿#define MyVer "1.0.0"
+﻿#define MyVer "1.0.1"
 [Setup]
 AppId={{B4C2E7A1-5D3F-4A9B-9E61-7C0D2F8A3B54}
 AppName=PIKNOTT CELESTIKA
