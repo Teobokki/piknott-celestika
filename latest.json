@@ -1,8 +1,8 @@
 {
-  "version": "1.0.0",
-  "url": "https://github.com/Teobokki/piknott-celestika/releases/download/v1.0.0/PIKNOTT.CELESTIKA.Setup.1.0.0.exe",
-  "installer_url": "https://github.com/Teobokki/piknott-celestika/releases/download/v1.0.0/PIKNOTT.CELESTIKA.Setup.1.0.0.exe",
-  "full_url": "https://github.com/Teobokki/piknott-celestika/releases/download/v1.0.0/PIKNOTT.CELESTIKA.1.0.0.Windows.x64.zip",
-  "portable_url": "https://github.com/Teobokki/piknott-celestika/releases/download/v1.0.0/PIKNOTT.CELESTIKA.Portable.exe",
-  "notes": "First release of PIKNOTT CELESTIKA: a fully cel-shaded monster catching RPG. Explore the Celestika region, catch 13 PIKNOTT with Pikcel balls and battle with Normal/Strong/Agile move styles."
+  "version": "1.0.1",
+  "url": "https://github.com/Teobokki/piknott-celestika/releases/download/v1.0.1/PIKNOTT.CELESTIKA.Setup.1.0.1.exe",
+  "installer_url": "https://github.com/Teobokki/piknott-celestika/releases/download/v1.0.1/PIKNOTT.CELESTIKA.Setup.1.0.1.exe",
+  "full_url": "https://github.com/Teobokki/piknott-celestika/releases/download/v1.0.1/PIKNOTT.CELESTIKA.1.0.1.Windows.x64.zip",
+  "portable_url": "https://github.com/Teobokki/piknott-celestika/releases/download/v1.0.1/PIKNOTT.CELESTIKA.Portable.exe",
+  "notes": "Mouse-friendly update: on-screen MENU, MAP, TEAM and DOK buttons (middle-click frees the cursor), plus clickable Close buttons on the map, CELESTIKA DOK and Team screens."
 }
